@@ -71,26 +71,30 @@ textarea:focus-visible {
 
 .app-background {
   position: fixed;
-  inset: 0;
+  inset: -2%;
   z-index: -3;
-  background:
-    url('/images/ayurome-background.png')
-    center center / cover no-repeat;
-  transform: scale(1.025);
+
+  background-image: url("/images/ayurome-valley.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  animation: background-arrive 1.1s ease both,
+             valley-drift 28s ease-in-out infinite alternate;
 }
 
 .app-background-overlay {
   position: fixed;
   inset: 0;
   z-index: -2;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(245, 239, 213, 0.12),
-      rgba(239, 235, 210, 0.2) 45%,
-      rgba(29, 51, 33, 0.14)
-    );
   pointer-events: none;
+
+  background: linear-gradient(
+    180deg,
+    rgba(247, 241, 220, 0.12) 0%,
+    rgba(247, 241, 220, 0.22) 55%,
+    rgba(247, 241, 220, 0.42) 100%
+  );
 }
 
 .theme-vata {
@@ -1552,28 +1556,38 @@ textarea:focus-visible {
 
 /* Roll-on product page */
 
+
+/* Roll-on product page */
+
 .rollon-screen {
   width: min(1160px, 100%);
   text-align: center;
 }
 
 .rollon-showcase {
-  width: min(880px, 100%);
+  width: min(1000px, 100%);
   margin: 0 auto 45px;
-  padding: 25px;
+  padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 26px;
   background: var(--glass);
   box-shadow: var(--shadow);
 }
 
+.rollon-viewer-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 135px;
+  align-items: center;
+  gap: 24px;
+}
+
 .rollon-product-stage {
   position: relative;
   display: grid;
-  min-height: 360px;
+  min-height: 430px;
   overflow: hidden;
   place-items: center;
-  border-radius: 18px;
+  border-radius: 20px;
   background:
     radial-gradient(
       ellipse at center,
@@ -1581,23 +1595,28 @@ textarea:focus-visible {
       rgba(255, 251, 238, 0.9) 48%,
       rgba(239, 232, 211, 0.3) 100%
     );
-  cursor: grab;
-  touch-action: pan-y;
-}
-
-.rollon-product-stage:active {
-  cursor: grabbing;
 }
 
 .rollon-product-image {
   position: relative;
   z-index: 2;
-  width: min(260px, 55%);
-  height: 330px;
+  width: min(300px, 75%);
+  height: 390px;
   object-fit: contain;
   user-select: none;
   filter: drop-shadow(0 17px 17px rgba(33, 43, 29, 0.23));
-  transition: transform 0.12s ease-out;
+  animation: bottle-image-enter 0.3s ease;
+}
+
+@keyframes bottle-image-enter {
+  from {
+    opacity: 0.5;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .bottle-stage-glow {
@@ -1612,33 +1631,60 @@ textarea:focus-visible {
   transform: translateX(-50%);
 }
 
-.bottle-controls {
+.rollon-view-selector {
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 13px;
+}
+
+.rollon-view-selector > p {
+  margin: 0 0 3px;
+  color: var(--dosha-deep);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.rollon-view-button {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding-top: 20px;
+  gap: 7px;
+  padding: 9px;
+  border: 1px solid rgba(91, 108, 76, 0.2);
+  border-radius: 14px;
+  background: rgba(255, 253, 245, 0.85);
+  color: var(--forest);
+  transition: 0.25s ease;
 }
 
-.bottle-controls button {
-  padding: 10px 16px;
-  border: 1px solid #dce1d3;
-  border-radius: 25px;
-  background: #fffdf5;
-  color: #546d50;
+.rollon-view-button img {
+  width: 65px;
+  height: 83px;
+  object-fit: contain;
+}
+
+.rollon-view-button span {
   font-size: 11px;
-  transition: 0.2s ease;
+  font-weight: 600;
 }
 
-.bottle-controls button:hover {
+.rollon-view-button:hover,
+.rollon-view-button.active {
   border-color: var(--dosha-primary);
   background: var(--dosha-pale);
+  box-shadow: 0 5px 16px var(--dosha-soft);
+  transform: translateY(-2px);
 }
 
-.bottle-controls span {
-  color: #939887;
-  font-size: 10px;
+.rollon-view-hint {
+  margin: 17px 0 0;
+  color: #858978;
+  font-size: 11px;
+  letter-spacing: 0.02em;
 }
+
 
 .rollon-screen > h1 {
   color: var(--dosha-deep);
@@ -2400,4 +2446,370 @@ textarea:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* =========================================
+   AYUROME ROLL-ON IMAGE VIEWER
+   Front / Side / Back
+========================================= */
+
+.rollon-showcase {
+  width: min(1050px, 100%);
+  margin: 0 auto 42px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 30px;
+  background: rgba(255, 252, 241, 0.88);
+  box-shadow: 0 20px 55px rgba(34, 49, 32, 0.14);
+  backdrop-filter: blur(14px);
+}
+
+.rollon-viewer-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.rollon-product-stage {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 440px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 24px;
+  background:
+    radial-gradient(
+      ellipse at center,
+      var(--dosha-pale) 0%,
+      rgba(255, 251, 238, 0.88) 48%,
+      rgba(239, 232, 211, 0.22) 100%
+    );
+}
+
+.rollon-product-image {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: auto;
+  max-width: min(85%, 350px);
+  height: 390px;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 18px 18px rgba(33, 43, 29, 0.22));
+  animation: bottle-image-enter 0.35s ease;
+}
+
+@keyframes bottle-image-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bottle-stage-glow {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  width: 190px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(46, 56, 34, 0.2);
+  filter: blur(13px);
+  transform: translateX(-50%);
+}
+
+.rollon-view-selector {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.rollon-selector-heading {
+  margin: 0;
+  color: var(--dosha-deep);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.rollon-view-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.rollon-view-button {
+  display: inline-flex;
+  min-width: 125px;
+  min-height: 47px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 23px;
+  border: 1px solid rgba(91, 108, 76, 0.24);
+  border-radius: 30px;
+  background: rgba(255, 253, 245, 0.92);
+  color: var(--forest);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.rollon-view-button:hover {
+  border-color: var(--dosha-primary);
+  background: var(--dosha-pale);
+  transform: translateY(-2px);
+}
+
+.rollon-view-button.active {
+  border-color: var(--dosha-primary);
+  background: var(--dosha-deep);
+  color: white;
+  box-shadow: 0 7px 18px var(--dosha-soft);
+}
+
+.view-button-label {
+  letter-spacing: 0.03em;
+}
+
+.rollon-view-hint {
+  margin: 15px 0 0;
+  color: #858978;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* Responsive viewer */
+
+@media (max-width: 600px) {
+  .rollon-showcase {
+    padding: 13px;
+    border-radius: 20px;
+  }
+
+  .rollon-product-stage {
+    min-height: 340px;
+  }
+
+  .rollon-product-image {
+    max-width: 90%;
+    height: 305px;
+  }
+
+  .rollon-view-buttons {
+    gap: 7px;
+  }
+
+  .rollon-view-button {
+    min-width: 0;
+    flex: 1;
+    min-height: 43px;
+    padding: 9px 10px;
+    font-size: 11px;
+  }
+}
+
+/* ===== ACCOUNT AUTHENTICATION & PROFILE PHOTO CONTROLS ===== */
+.auth-screen {
+  width: min(820px, calc(100% - 32px));
+}
+.auth-error, .auth-message {
+  width: 100%;
+  margin: 0;
+  padding: 12px 15px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.auth-error { color: #8e342c; background: rgba(183, 73, 58, .10); border: 1px solid rgba(183, 73, 58, .25); }
+.auth-message { color: #345c39; background: rgba(71, 133, 79, .10); border: 1px solid rgba(71, 133, 79, .24); }
+.profile-photo-placeholder {
+  width: 142px;
+  height: 142px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #53664e;
+  background: linear-gradient(145deg, #f8f3e6, #e4e8d8);
+  border: 1px solid rgba(75, 93, 64, .2);
+}
+.profile-photo-upload-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.profile-photo-upload-row img { width: 76px; height: 76px; object-fit: cover; border-radius: 50%; border: 2px solid rgba(171, 139, 72, .5); }
+.profile-photo-upload-row .profile-photo-placeholder { width: 76px; height: 76px; }
+.profile-photo-upload-row .profile-photo-placeholder svg { width: 30px; height: 30px; }
+.profile-photo-upload-row input[type="file"] { max-width: 100%; color: #52614d; font-size: 12px; }
+.profile-photo-upload-group > label { display: block; }
+.profile-photo-upload-group .optional-label { display: block; margin-top: 5px; }
+.profile-avatar-large > img { width: 142px; height: 142px; object-fit: cover; border-radius: 50%; }
+.profile-avatar-large .change-avatar-btn input[type="file"] { display: none; }
+.profile-avatar-large .change-avatar-btn { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.profile-avatar-large { align-items: center; }
+@media (max-width: 520px) {
+  .profile-photo-upload-row { align-items: flex-start; flex-direction: column; }
+}
+
+
+/* Guest access, account menu and gated journey refinements */
+.profile-menu-wrap { position: relative; }
+.profile-dropdown {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+}
+.profile-menu-wrap:not(:hover) .profile-dropdown {
+  /* React controls visibility; pointer leaving the wrapper closes the menu. */
+}
+.profile-dropdown-heading span {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+.profile-avatar-large img {
+  object-fit: cover;
+  background: #686868;
+}
+.guest-profile-card {
+  width: min(520px, 100%);
+  margin: 35px auto;
+  padding: 38px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  border: 1px solid rgba(155,139,93,.24);
+  border-radius: 26px;
+  background: rgba(255,253,246,.92);
+  box-shadow: 0 20px 55px rgba(37,48,32,.12);
+}
+.guest-profile-card img {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #686868;
+}
+.guest-profile-card p, .level-locked-notice p {
+  color: #68705c;
+  line-height: 1.7;
+}
+.level-locked-notice {
+  max-width: 620px;
+  margin: 24px auto 0;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid rgba(155,139,93,.25);
+  border-radius: 20px;
+  background: rgba(255,253,246,.72);
+}
+.auth-form {
+  max-width: 540px;
+  margin: 26px auto;
+}
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #43543e;
+  font-weight: 600;
+}
+.auth-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid rgba(155,139,93,.35);
+  border-radius: 12px;
+  background: rgba(255,255,255,.78);
+  color: #304431;
+}
+.auth-switch {
+  border: 0;
+  background: transparent;
+  color: #795a1b;
+  text-decoration: underline;
+  padding: 10px;
+}
+.header-level-stars { flex-shrink: 0; }
+@media (max-width: 760px) {
+  .header-level-stars { display: none; }
+}
+
+.profile-icon-button {
+  overflow: hidden;
+  padding: 0;
+}
+.profile-icon-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+/* Account, custom avatar, Other goal and preferred Dosha refinements */
+.custom-avatar-upload {
+  width: min(520px, 100%);
+  margin: 18px auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border: 1px dashed rgba(129, 111, 68, .45);
+  border-radius: 18px;
+  background: rgba(255,253,246,.72);
+}
+.custom-avatar-upload label { font-weight: 700; color: #304431; }
+.custom-avatar-upload input { max-width: 100%; }
+.custom-avatar-upload small { color: #777763; }
+.custom-avatar-preview {
+  width: 112px;
+  height: 112px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #e1c477;
+}
+.preferred-dosha-label {
+  display: inline-flex;
+  align-self: center;
+  width: fit-content;
+  margin: 8px auto;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(214,182,111,.22);
+  color: #805b1a;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+.rollon-view-progress {
+  margin: 6px 0 16px;
+  color: #80601f;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+.profile-form input[type="text"] { max-width: 100%; }
+
+.auth-feedback {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(164, 112, 53, .35);
+  border-radius: 12px;
+  background: rgba(255, 246, 225, .9);
+  color: #765326;
+  line-height: 1.55;
+  font-size: 14px;
 }
